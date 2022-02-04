@@ -27,5 +27,52 @@ pub mod mymoneydapp {
     }
 }
  
+#[derive(AnchorSerialize, AnchorDeserialize)]
+pub enum AuthorityType {
+    MintTokens,     // Authority to mint new tokens
+    FreezeAccount,  // Authority to freeze any account associated with the mint
+    AccountOwner,   // Owner of a given token account
+    CloseAccount,   // Authority to close a token Account
+}
+
 #[derive(Accounts)]
-pub struct Initialize {}
+pub struct ProxyTransfer<'info> {
+    #[account(signer)]
+    pub authority: AccountInfo<'info>,
+    #[account(mut)]
+    pub from: AccountInfo<'info>,
+    #[account(mut)]
+    pub to:AccountInfo<'info>,
+    pub_token_program: AccountInfo<'info>,
+}
+
+#[derive(Accounts)]
+pub struct ProxyMintTo<'info> {
+    #[account(signer)]
+    pub authority: AccountInfo<'info>,
+    #[account(mut)]
+    pub mint: AccountInfo<'info>,
+    #[account(mut)]
+    pub to: AccountInfo<'info>,
+    pub token_program: AccountInfo<'info>,
+}
+
+#[derive(Accounts)]
+pub struct ProxyBurn<'info> {
+    #[account(signer)]
+    pub authority: AccountInfo<'info>,
+    #[account(mut)]
+    pub mint: AccountInfo<'info>,
+    #[account(mut)]
+    pub to: AccountInfo<'info>,
+    pub token_program: AccountInfo<'info>,
+}
+
+#[derive(Accounts)]
+pub struct ProxySetAuthority<'info> {
+    #[account(signer)]
+    pub current_authority: AccountInfo<'info>,
+    #[account(mut)]
+    pub account_or_mint: AccountInfo<'info>,
+    pub token_program: AccountInfo<'info>,
+}
